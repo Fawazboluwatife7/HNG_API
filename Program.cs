@@ -6,8 +6,12 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("AllowAll", builder =>
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 });
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -15,6 +19,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -25,17 +30,24 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 
 app.UseRouting();
 app.UseCors("AllowAll");
 app.UseForwardedHeaders();
 app.UseHttpsRedirection();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Remove("Server");
+    await next();
+});
+
 
 app.UseAuthorization();
 
