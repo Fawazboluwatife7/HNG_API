@@ -1,3 +1,5 @@
+using HNG_WEB_API.Models;
+using HNG_WEB_API.Service;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,17 +15,17 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-
+builder.Services.AddHttpClient<IpApiClient>();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+builder.Services.Configure<ForwardedHeadersOptions>(options => {
+options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+   options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
 });
 
 
@@ -35,6 +37,7 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+
 
 
 app.UseRouting();

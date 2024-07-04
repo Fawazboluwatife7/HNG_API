@@ -2,6 +2,10 @@
 {
     public class Visitor
     {
-        public string visitorName { get; set; }    
+
+        public string visitorName { get; set; }
+
+
+
     }
 }
